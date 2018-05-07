@@ -4,7 +4,7 @@ var infrared = infraredlib.use(tessel.port['B']);
 var rfidlib = require('rfid-pn532');
 var rfid = rfidlib.use(tessel.port['A']);
 
-const userRFID = []
+const userRFID = {}
 let currentUser = ''
 let currentSong = []
 const bufferObject = []
@@ -12,24 +12,27 @@ const bufferObject = []
 let i = 0
 // If we get data, push to database
 infrared.on('data', function (data) {
-  bufferObject.push({ name: i, bufferObj: JSON.stringify(data) })
-  console.log("Received RX Data: ", data);
-  i++
+  if (i < 10) {
+    bufferObject.push({ name: i, bufferObj: JSON.stringify(data) })
+    console.log("Received RX Data: ", bufferObject);
+    i++
+  } else {
+    currentSong = userRFID[currentUser][JSON.stringify(bufferObject)]
+    //Play song currentSong
+  }
 });
 
 rfid.on('ready', function (version) {
   console.log('Ready to read RFID card');
 
   rfid.on('data', function (card) {
-    userRFID.push({
-      userRfid: card.uid.toString('hex'),
-      playlist: {
-        [oneBuffer]:
-          'https://www.youtube.com/watch?v=FTQbiNvZqaY'
-      }
-    })
-    console.log('UID:', card.uid.toString('hex'));
-  });
+    userRFID[card.uid.toString('hex')] = {
+      [bufferObject[0]]:
+        'https://www.youtube.com/watch?v=FTQbiNvZqaY'
+    }
+  })
+  currentUser = card.uid.toString('hex')
+  console.log('UID:', card.uid.toString('hex'));
 });
 
 rfid.on('error', function (err) {
