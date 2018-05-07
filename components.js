@@ -18,7 +18,7 @@ const bufferObject = []
 
 let i = 0
 // If we get data, push to database
-infrared.on('data', async function (data) {
+infrared.on('data', function (data) {
   if (i < 2) {
     bufferObject.push({ name: i, bufferObj: JSON.stringify(data) })
     console.log("Received RX Data: ", bufferObject);
@@ -26,7 +26,7 @@ infrared.on('data', async function (data) {
   } else {
     currentSong = userRFID[currentUser][JSON.stringify(bufferObject)]
     console.log(currentUser, currentSong);
-    await opn(currentSong)
+    opn(currentSong)
     //Play song currentSong
     // var sound = new av.Speaker(currentSong);
 
