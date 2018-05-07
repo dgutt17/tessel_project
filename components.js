@@ -3,9 +3,10 @@ var infraredlib = require('ir-attx4');
 var infrared = infraredlib.use(tessel.port['B']);
 var rfidlib = require('rfid-pn532');
 var rfid = rfidlib.use(tessel.port['A']);
+const opn = require('opn');
 
 var path = require('path');
-var av = require('tessel-av');
+// var av = require('tessel-av');
 
 
 
@@ -17,22 +18,23 @@ const bufferObject = []
 
 let i = 0
 // If we get data, push to database
-infrared.on('data', function (data) {
-  if (i < 10) {
+infrared.on('data', async function (data) {
+  if (i < 2) {
     bufferObject.push({ name: i, bufferObj: JSON.stringify(data) })
     console.log("Received RX Data: ", bufferObject);
     i++
   } else {
     currentSong = userRFID[currentUser][JSON.stringify(bufferObject)]
-    console.log(data);
+    console.log(currentSong);
+    await opn(currentSong)
     //Play song currentSong
-    var sound = new av.Speaker(currentSong);
+    // var sound = new av.Speaker(currentSong);
 
-    sound.play();
+    // sound.play();
 
-    sound.on('ended', function(seconds) {
-    sound.play();
-});
+    // sound.on('ended', function(seconds) {
+    // sound.play();
+// });
   }
 });
 
@@ -41,8 +43,9 @@ rfid.on('ready', function (version) {
 
   rfid.on('data', function (card) {
     userRFID[card.uid.toString('hex')] = {
-      [bufferObject[0]]:
-      path.join(__dirname, 'ahsanFav.mp3')
+      [bufferObject[0]]: 'https://www.youtube.com/watch?v=FTQbiNvZqaY'
+
+    //   path.join(__dirname, 'ahsanFav.mp3')
     }
  
   currentUser = card.uid.toString('hex')

@@ -13,9 +13,8 @@
   "license": "MIT",
   "readme": "A bare bones Tessel 2 blinky script.",
   "dependencies": {
-    "espeak": "0.0.3",
     "ir-attx4": "^0.2.10",
-    "rfid-pn532": "^0.1.9",
-    "tessel-av": "^0.19.0"
+    "opn": "^5.3.0",
+    "rfid-pn532": "^0.1.9"
   }
 }
