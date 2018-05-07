@@ -4,6 +4,12 @@ var infrared = infraredlib.use(tessel.port['B']);
 var rfidlib = require('rfid-pn532');
 var rfid = rfidlib.use(tessel.port['A']);
 
+var path = require('path');
+var av = require('tessel-av');
+
+
+
+
 const userRFID = {}
 let currentUser = ''
 let currentSong = []
@@ -19,6 +25,13 @@ infrared.on('data', function (data) {
   } else {
     currentSong = userRFID[currentUser][JSON.stringify(bufferObject)]
     //Play song currentSong
+    var sound = new av.Speaker(currentSong);
+
+    sound.play();
+
+    sound.on('ended', function(seconds) {
+    sound.play();
+});
   }
 });
 
@@ -28,7 +41,7 @@ rfid.on('ready', function (version) {
   rfid.on('data', function (card) {
     userRFID[card.uid.toString('hex')] = {
       [bufferObject[0]]:
-        'https://www.youtube.com/watch?v=FTQbiNvZqaY'
+      path.join(__dirname, 'ahsanFav.mp3');
     }
   })
   currentUser = card.uid.toString('hex')
@@ -38,6 +51,8 @@ rfid.on('ready', function (version) {
 rfid.on('error', function (err) {
   console.error(err);
 });
+
+
 
 // // When we're connected
 // infrared.on('ready', function () {
