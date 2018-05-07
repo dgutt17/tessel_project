@@ -13,49 +13,52 @@ var path = require('path');
 
 const userRFID = {}
 let currentUser = ''
-let currentSong = []
+let currentSong = ''
 const bufferObject = []
 
 let i = 0
 // If we get data, push to database
-infrared.on('data', function (data) {
-  if (i < 2) {
-    bufferObject.push({ name: i, bufferObj: JSON.stringify(data) })
-    console.log("Received RX Data: ", bufferObject);
-    i++
-  } else {
-    currentSong = userRFID[currentUser][JSON.stringify(bufferObject)]
-    console.log(currentUser, currentSong);
-    opn(currentSong)
-    //Play song currentSong
-    // var sound = new av.Speaker(currentSong);
+// infrared.on('data', function (data) {
+//   if (i < 2) {
+//     bufferObject.push({ name: i, bufferObj: JSON.stringify(data) })
+//     console.log("Received RX Data: ", bufferObject);
+//     i++
+//   } else {
+// currentSong = userRFID[currentUser][JSON.stringify(data)]
+// console.log(JSON.stringify(data), userRFID[currentUser], currentSong);
+// opn(currentSong)
+//     //Play song currentSong
+//     // var sound = new av.Speaker(currentSong);
 
-    // sound.play();
+//     // sound.play();
 
-    // sound.on('ended', function(seconds) {
-    // sound.play();
-    // });
-  }
-});
+//     // sound.on('ended', function(seconds) {
+//     // sound.play();
+//     // });
+//   }
+// });
 
 rfid.on('ready', function (version) {
   console.log('Ready to read RFID card');
 
   rfid.on('data', function (card) {
-    userRFID[card.uid.toString('hex')] = {
-      [bufferObject[0].bufferObj]: 'https://www.youtube.com/watch?v=FTQbiNvZqaY'
-      //   path.join(__dirname, 'ahsanFav.mp3')
+    if (i < 2) {
+      userRFID[card.uid.toString('hex')] = 'https://www.youtube.com/watch?v=FTQbiNvZqaY'
+      i++
+    } else {
+      currentSong = userRFID[currentUser]
+      console.log(userRFID[currentUser], currentSong);
+      opn(currentSong)
+
+      currentUser = card.uid.toString('hex')
+      console.log('UID:', card.uid.toString('hex'));
+      console.log(userRFID)
     }
-
-    currentUser = card.uid.toString('hex')
-    console.log('UID:', card.uid.toString('hex'));
-    console.log(userRFID)
   })
-});
 
-rfid.on('error', function (err) {
-  console.error(err);
-});
+  rfid.on('error', function (err) {
+    console.error(err);
+  });
 
 
 
