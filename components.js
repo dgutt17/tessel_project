@@ -3,18 +3,16 @@ var infraredlib = require('ir-attx4');
 var infrared = infraredlib.use(tessel.port['B']);
 var rfidlib = require('rfid-pn532');
 var rfid = rfidlib.use(tessel.port['A']);
-const db = require('./db')
-
-db.sync()
 
 const userRFID = []
 let currentUser = ''
 let currentSong = []
+const bufferObject = []
 
 let i = 0
 // If we get data, push to database
 infrared.on('data', function (data) {
-  db.models.BufferObject.create({ name: i, bufferObj: JSON.stringify(data) })
+  bufferObject.push({ name: i, bufferObj: JSON.stringify(data) })
   console.log("Received RX Data: ", data);
   i++
 });
