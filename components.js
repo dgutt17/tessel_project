@@ -24,6 +24,7 @@ infrared.on('data', function (data) {
     i++
   } else {
     currentSong = userRFID[currentUser][JSON.stringify(bufferObject)]
+    console.log(data);
     //Play song currentSong
     var sound = new av.Speaker(currentSong);
 
@@ -41,11 +42,12 @@ rfid.on('ready', function (version) {
   rfid.on('data', function (card) {
     userRFID[card.uid.toString('hex')] = {
       [bufferObject[0]]:
-      path.join(__dirname, 'ahsanFav.mp3');
+      path.join(__dirname, 'ahsanFav.mp3')
     }
-  })
+ 
   currentUser = card.uid.toString('hex')
   console.log('UID:', card.uid.toString('hex'));
+})
 });
 
 rfid.on('error', function (err) {
