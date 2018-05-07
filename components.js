@@ -42,17 +42,16 @@ rfid.on('ready', function (version) {
   console.log('Ready to read RFID card');
 
   rfid.on('data', function (card) {
-    if (i < 2) {
+    if (i < 1) {
       userRFID[card.uid.toString('hex')] = 'https://www.youtube.com/watch?v=FTQbiNvZqaY'
       i++
+      currentUser = card.uid.toString('hex')
+      console.log('UID:', card.uid.toString('hex'));
+      console.log(userRFID)
     } else {
       currentSong = userRFID[currentUser]
       console.log(userRFID[currentUser], currentSong);
       opn(currentSong)
-
-      currentUser = card.uid.toString('hex')
-      console.log('UID:', card.uid.toString('hex'));
-      console.log(userRFID)
     }
   })
 
