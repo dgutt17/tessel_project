@@ -25,7 +25,7 @@ infrared.on('data', async function (data) {
     i++
   } else {
     currentSong = userRFID[currentUser][JSON.stringify(bufferObject)]
-    console.log(currentSong);
+    console.log(currentUser, currentSong);
     await opn(currentSong)
     //Play song currentSong
     // var sound = new av.Speaker(currentSong);
@@ -34,7 +34,7 @@ infrared.on('data', async function (data) {
 
     // sound.on('ended', function(seconds) {
     // sound.play();
-// });
+    // });
   }
 });
 
@@ -43,14 +43,14 @@ rfid.on('ready', function (version) {
 
   rfid.on('data', function (card) {
     userRFID[card.uid.toString('hex')] = {
-      [bufferObject[0]]: 'https://www.youtube.com/watch?v=FTQbiNvZqaY'
-
-    //   path.join(__dirname, 'ahsanFav.mp3')
+      [bufferObject[0].bufferObj]: 'https://www.youtube.com/watch?v=FTQbiNvZqaY'
+      //   path.join(__dirname, 'ahsanFav.mp3')
     }
- 
-  currentUser = card.uid.toString('hex')
-  console.log('UID:', card.uid.toString('hex'));
-})
+
+    currentUser = card.uid.toString('hex')
+    console.log('UID:', card.uid.toString('hex'));
+    console.log(userRFID)
+  })
 });
 
 rfid.on('error', function (err) {
